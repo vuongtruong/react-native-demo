@@ -46,11 +46,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#666',
     // marginHorizontal: 40,
     // paddingHorizontal: 10,
-    width: 300,
+    width: "80%",
     borderRadius: 5,
+    marginLeft: "10%"
   },
   textInput: {
     flex: 1,
     color: 'white',
+    padding: "5%",
   },
 });

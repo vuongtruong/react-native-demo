@@ -11,21 +11,42 @@ import { Navigation } from 'react-native-navigation';
 import Icon from "react-native-vector-icons/Ionicons";
 
 class SideDrawer extends Component{
-    pushScreen = () => {
+    constructor(props){
+        super(props);
+    }
+    pushScreen = (type) => {
         this._toggleDrawer();
-        this.props.navigator.handleDeepLink({link: "Weathers"});
+        this.props.navigator.handleDeepLink({link: "recent.RecentScreen"});
     };
     _toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-        to: 'closed',
-        side: 'left',
-        animated: true
-    });
+        this.props.navigator.toggleDrawer({
+            to: 'closed',
+            side: 'left',
+            animated: true
+        });
 	}
 
     render(){
         return(
             <View style={styles.container}>
+                <TouchableOpacity onPress={this.pushScreen.bind(this)}>
+                    <View style={styles.drawerItem}>
+                        <Icon name="ios-log-out" size={30} color="#aaa" style={styles.drawerItemIcon} />
+                        <Text>Contacts</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.pushScreen.bind(this)}>
+                    <View style={styles.drawerItem}>
+                        <Icon name="ios-log-out" size={30} color="#aaa" style={styles.drawerItemIcon} />
+                        <Text>Recents</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.pushScreen.bind(this)}>
+                    <View style={styles.drawerItem}>
+                        <Icon name="ios-log-out" size={30} color="#aaa" style={styles.drawerItemIcon} />
+                        <Text>News</Text>
+                    </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={this.pushScreen.bind(this)}>
                     <View style={styles.drawerItem}>
                         <Icon name="ios-log-out" size={30} color="#aaa" style={styles.drawerItemIcon} />

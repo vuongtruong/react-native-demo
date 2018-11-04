@@ -24,7 +24,7 @@ export default class Contacts extends React.Component {
   }
   onPressScreen1() {
     this.props.navigator.push({
-      title: "Screen 1",
+      title: "Contacts",
       screen: "contacts"
     });
   }

@@ -46,14 +46,14 @@ export default class Weathers extends Component {
   }
   handleUpdateLocation = async city =>{
     if(!city) return;
-    console.log("submit");
+    // console.log("submit");
     this.setState({loading: true,},
        async ()=>{
          try{
         const locationId = await fetchLocationId(city);
         const {location, weather, temperature} = await fetchWeather(locationId);
-          console.log("location");
-          console.log(location);
+          // console.log("location");
+          // console.log(location);
         this.setState({
           loading: false,
           error: false,
@@ -75,7 +75,7 @@ export default class Weathers extends Component {
     return (
       <KeyboardAvoidingView style={styles.container} >
         <StatusBar barStyle="light-content" />
-        <ImageBackground  source={getImageForWeather('Clear')} style={styles.imageBack} imageStyle={styles.image}>
+        <ImageBackground  source={getImageForWeather('Clear')} style={styles.image}>
           <View style={styles.detailContainer}>
             <ActivityIndicator animating={loading} color="white" size="large" />
             {!loading && (
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   image: {
     flex:1,
     resizeMode: 'cover',
-    width: null,
-    height: null,
+    width: "100%",
+    height: "100%",
   },
   detailContainer: {
     flex: 1,

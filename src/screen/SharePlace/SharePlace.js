@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import {View, Text, TextInput, Button, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Platform } from 'react-native';
 
 import MainText from '../../components/UI/MainText/MainText';
 import HeaderText from '../../components/UI/HeadingText/HeadingText';
 import PlaceInput from '../../components/UI/PlaceInput/PlaceInput';
 import { addPlace } from '../../store/actions/places';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 
 
@@ -23,15 +24,46 @@ class SharePlaceScreen extends Component {
         }else if(event.type === "DeepLink"){
             if(event.link === "Weathers"){
                 this.onPushScreen();
+            }else if(event.link === "contacts"){
+                this.onPressScreen1();
+            }else if(event.link === "recent.RecentScreen"){
+                this.onPressScreenRecents();
             }
         }
-      }
-      onPushScreen() {
+    }
+    onPressScreenRecents(){
         this.props.navigator.push({
-          title: "Screen 1",
-          screen: "Weathers"
+            title: "Recents",
+            screen: "recent.RecentScreen"
         });
-      }
+    }
+    onPressScreen1() {
+        this.props.navigator.push({
+          title: "Contacts",
+          screen: "contacts"
+        });
+    }
+    onPushScreen() {
+        Promise.all([
+            Icon.getImageSource(Platform.OS === 'android' ? 'md-map' : 'ios-map', 30),
+            Icon.getImageSource(Platform.OS === 'android' ? 'md-share-alt' : 'ios-share', 30),
+            Icon.getImageSource(Platform.OS === 'android' ? 'md-menu' : 'ios-menu', 30)
+        ]).then(source => {
+            this.props.navigator.push({
+                title: "Weathers",
+                screen: "Weathers",
+                navigatorButtons: {
+                    leftButtons: [
+                        {
+                            icon: source[2],
+                            title: 'Menu',
+                            id: 'sideDrawerToggle'
+                        }
+                    ]
+                }
+            });
+        });
+    }
     state ={
         placeName: ""
     };

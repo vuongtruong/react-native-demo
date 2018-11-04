@@ -11,9 +11,9 @@ const startTabs = () => {
         Navigation.startTabBasedApp({
             tabs: [
                 {
-                    screen: 'recent.RecentScreen',
-                    label: 'Recent',
-                    title: 'Recent',
+                    screen: 'Weathers',
+                    label: 'Weathers',
+                    title: 'Weathers',
                     icon: source[0],
                     navigatorButtons: {
                         leftButtons: [
@@ -27,7 +27,7 @@ const startTabs = () => {
                 },
                 {
                     screen: "awesome-places.SharePlaceScreen",
-                    label: "Contacts",
+                    label: "Share a Places",
                     title: "Share a Places",
                     icon: source[1],
                     navigatorButtons:{
