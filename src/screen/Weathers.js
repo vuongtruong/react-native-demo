@@ -34,16 +34,64 @@ export default class Weathers extends Component {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
-  onNavigatorEvent(event){
-    if(event.type == "NavBarButtonPress"){
-      if(event.id == "sideDrawerToggle"){
+  onNavigatorEvent = event => {
+    if(event.type === "NavBarButtonPress"){
+      if(event.id === "sideDrawerToggle"){
         this.props.navigator.toggleDrawer({
-          side: "left",
-          animated: true
+          side: "left"
         });
       }
+    }else if(event.type === "DeepLink"){
+        if(event.link === "Weathers"){
+            this.onPushScreen();
+        }else if(event.link === "topicScreen"){
+            this.onPressScreen1();
+        }else if(event.link === "recent.RecentScreen"){
+            this.onPressScreenRecents();
+        }else if(event.link === "settingScreen"){
+          this.onPressScreenSetting();
+        }
     }
-  }
+}
+onPressScreenRecents(){
+    this.props.navigator.push({
+        title: "Recents",
+        screen: "recent.RecentScreen"
+    });
+}
+onPressScreen1() {
+    this.props.navigator.push({
+      title: "Topic",
+      screen: "topicScreen"
+    });
+}
+onPressScreenSetting(){
+  this.props.navigator.push({
+    title: "Setting",
+    screen: "settingScreen"
+  })
+}
+onPushScreen() {
+    Promise.all([
+        Icon.getImageSource(Platform.OS === 'android' ? 'md-map' : 'ios-map', 30),
+        Icon.getImageSource(Platform.OS === 'android' ? 'md-share-alt' : 'ios-share', 30),
+        Icon.getImageSource(Platform.OS === 'android' ? 'md-menu' : 'ios-menu', 30)
+    ]).then(source => {
+        this.props.navigator.push({
+            title: "Weathers",
+            screen: "Weathers",
+            navigatorButtons: {
+                leftButtons: [
+                    {
+                        icon: source[2],
+                        title: 'Menu',
+                        id: 'sideDrawerToggle'
+                    }
+                ]
+            }
+        });
+    });
+}
   handleUpdateLocation = async city =>{
     if(!city) return;
     // console.log("submit");

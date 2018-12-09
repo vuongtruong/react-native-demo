@@ -3,7 +3,7 @@ import {TextInput, StyleSheet} from 'react-native';
 
 const DefaultInput = props => (
     <TextInput underlineColorAndroid="transparent" 
-    {...props}
+    {...props} onChangeText={text => props.onChangeField(text)}
     style={[styles.input, props.style]}/>
 );
 

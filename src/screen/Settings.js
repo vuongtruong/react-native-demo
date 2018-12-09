@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default class Contacts extends React.Component {
+export default class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
   }
   onNavigatorEvent = event => {
-    console.log("contact event");
+    console.log("Settings event");
     console.log(event);
     if(event.type === "NavBarButtonPress"){
       if(event.id === "sideDrawerToggle"){
@@ -17,23 +17,21 @@ export default class Contacts extends React.Component {
       }
     }else if (event.type == 'DeepLink') {
       const parts = event.link;
-      if (parts == 'contacts') {
+      if (parts == 'settingScreen') {
         this.onPressScreen1();
       }
     }
   }
   onPressScreen1() {
     this.props.navigator.push({
-      title: "Contacts",
-      screen: "contacts"
+      title: "Settings",
+      screen: "settingScreen"
     });
   }
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <Text>Settings</Text>
       </View>
     );
   }

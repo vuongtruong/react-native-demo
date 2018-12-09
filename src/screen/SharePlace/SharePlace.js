@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Platform } from 'react-native';
 
 import MainText from '../../components/UI/MainText/MainText';
 import HeaderText from '../../components/UI/HeadingText/HeadingText';
@@ -7,31 +7,55 @@ import PlaceInput from '../../components/UI/PlaceInput/PlaceInput';
 import { addPlace } from '../../store/actions/places';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-
+import PickImage from '../../components/UI/PickImage/PickImage';
+import PickLocation from '../../components/UI/PickLocation/PickLocation';
+import validate from '../../utils/validation'
 
 class SharePlaceScreen extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
+        this.state = {
+            controls: {
+                placeName: {
+                    value: "",
+                    valid: false,
+                    touched: false,
+                    validationRules: {
+                        notEmpty: true
+                    }
+                },
+                oImage: {
+                    value: null,
+                    valid: false
+                },
+                oLocation: {
+                    value: null,
+                    valid: false,
+                }
+            }
+        };
         this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
     }
     onNavigatorEvent = event => {
-        if(event.type === "NavBarButtonPress"){
-          if(event.id === "sideDrawerToggle"){
-            this.props.navigator.toggleDrawer({
-              side: "left"
-            });
-          }
-        }else if(event.type === "DeepLink"){
-            if(event.link === "Weathers"){
+        if (event.type === "NavBarButtonPress") {
+            if (event.id === "sideDrawerToggle") {
+                this.props.navigator.toggleDrawer({
+                    side: "left"
+                });
+            }
+        } else if (event.type === "DeepLink") {
+            if (event.link === "Weathers") {
                 this.onPushScreen();
-            }else if(event.link === "contacts"){
+            } else if (event.link === "topicScreen") {
                 this.onPressScreen1();
-            }else if(event.link === "recent.RecentScreen"){
+            } else if (event.link === "recent.RecentScreen") {
                 this.onPressScreenRecents();
+            } else if (event.link === "settingScreen") {
+                this.onPressScreenSetting();
             }
         }
     }
-    onPressScreenRecents(){
+    onPressScreenRecents() {
         this.props.navigator.push({
             title: "Recents",
             screen: "recent.RecentScreen"
@@ -39,9 +63,15 @@ class SharePlaceScreen extends Component {
     }
     onPressScreen1() {
         this.props.navigator.push({
-          title: "Contacts",
-          screen: "contacts"
+            title: "Topics",
+            screen: "topicScreen"
         });
+    }
+    onPressScreenSetting() {
+        this.props.navigator.push({
+            title: "Setting",
+            screen: "settingScreen"
+        })
     }
     onPushScreen() {
         Promise.all([
@@ -64,49 +94,71 @@ class SharePlaceScreen extends Component {
             });
         });
     }
-    state ={
-        placeName: ""
-    };
-    placeNameChangeHandler = val => {
-        this.setState({
-            placeName: val
+
+
+    imagePickedHandler = image => {
+        this.setState(prevState => {
+            console.log(image);
+            console.log(`prevstate ${JSON.stringify(prevState)}`);
+            return {
+                controls: {
+                    ...prevState.controls,
+                    oImage: {
+                        value: image,
+                        valid: true
+                    }
+                }
+            };
         });
-    };
-    placeAddedHandler = ()  =>{
-        if(this.state.placeName.trim() !== ""){
-            this.props.onAddPlace(this.state.placeName);
-        }
     }
-    itemSelectedHandler = (key) => {
-        console.log("detail");
-        console.log(key);
+    locationPickedHandler = location => {
+        this.setState(prevState => {
+            console.log(location);
+            console.log(`prevState ${JSON.stringify(prevState)}`);
+            return {
+                controls: {
+                    ...prevState.controls,
+                    oLocation: {
+                        value: location,
+                        valid: true
+                    }
+                }
+            }
+        });
     }
-    render(){
-        return(
-            
+    placeNameChangedHandler = val => {
+        this.setState(prevState => {
+            return {
+                controls: {
+                    ...prevState.controls,
+                    placeName: {
+                        ...prevState.controls.placeName,
+                        value: val,
+                        valid: validate(val, prevState.controls.placeName.validationRules),
+                        touched: true
+                    }
+                }
+            };
+        });
+    }
+
+    render() {
+        return (
+
+            <ScrollView>
                 <View style={styles.container}>
-                    <PlaceInput 
-                        placeName={this.state.placeName}  
-                        onChangeText={this.placeNameChangeHandler}
+                    <MainText>
+                        <HeaderText>Share a Place with us!</HeaderText>
+                    </MainText>
+                    <PickImage onImagePicked={this.imagePickedHandler} />
+                    <PickLocation onLocationPick={this.locationPickedHandler} />
+                    <PlaceInput
+                        placeData={this.state.controls.placeName}
+                        onChangeText={this.placeNameChangedHandler}
                     />
-                    <FlatList
-                        style={styles.listContainer}
-                        data={this.props.places}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={(info) => (
-                            <TouchableOpacity onPress={this.itemSelectedHandler(info.item.key)}>
-                                <View style={styles.listItem}>
-                                    <Image resizeMode="cover" source={info.item.image} style={styles.placeImage} />
-                                    <Text>{info.item.name}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                        />
-                    <View style={styles.button}>
-                        <Button title="Share the Place!" onPress={this.placeAddedHandler} />
-                    </View>
                 </View>
-            
+            </ScrollView>
+
         );
     };
 };
@@ -116,7 +168,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center"
     },
-    button:{
+    button: {
         margin: 8
     },
     listContainer: {
@@ -138,12 +190,12 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
-      places: state.places.places
+        places: state.places.places
     };
-  };
+};
 const mapDispatchToProps = dispatch => {
     return {
         onAddPlace: placeName => dispatch(addPlace(placeName))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(SharePlaceScreen);
+export default SharePlaceScreen;
